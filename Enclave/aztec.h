@@ -12,7 +12,12 @@ extern G1 h;
 extern G1 ** base_notes_mu;
 extern int ** base_notes_value;
 
-void init_aztec_parameters(int max_k_power,int note_ratio);
+void ob_init_aztec_parameters(int max_k_power,int note_ratio);
+void non_ob_init_aztec_parameters();
+
+void non_ob_clear_aztec_parameters();
+
+void ob_clear_aztec_parameters(int max_k_power, int note_ratio);
 
 struct Commitment {
     G1 gamma;

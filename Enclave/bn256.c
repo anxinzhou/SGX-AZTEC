@@ -30,7 +30,13 @@ void init_curve_parameter() {
     mpz_init_set_str(G2Gen.t.y, "1", 10);
 
 
-    mpz_set_str(q, "65000549695646603732796438742359905742825358107623003571877145026864184071783", 10);
+    mpz_init_set_str(q, "65000549695646603732796438742359905742825358107623003571877145026864184071783", 10);
+}
+
+void clear_curve_parameter() {
+	G1_clear_field(&G1Gen);
+	G2_clear_field(&G2Gen);
+	mpz_clear(q);
 }
 
 // init field of p
@@ -622,8 +628,8 @@ void G2_mul(G2 *c, G2 *a, mpz_t b) {
     G2_init_field(&sum);
 
     G2_set_infinity(&sum);
-
-    for (int i = mpz_sizeinbase(b, 2); i >= 0; i--) {
+    int len = mpz_sizeinbase(b, 2);
+    for (int i = len; i >= 0; i--) {
         G2_set_g2(&t, &sum);
         G2_double(&t);
         if (mpz_tstbit(b, i) != 0) {

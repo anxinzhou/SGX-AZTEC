@@ -5,7 +5,7 @@
 #ifndef PROOF_BN256_H
 #define PROOF_BN256_H
 
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "util.h"
 #include <string.h>
 #include <stdint.h>
@@ -22,6 +22,7 @@ extern G2 G2Gen;
 extern const int y;
 
 void init_curve_parameter();
+void clear_curve_parameter();
 
 struct G1 {
     mpz_t x;
