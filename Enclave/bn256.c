@@ -151,7 +151,10 @@ void G1_add(G1 *c, G1 *a, G1 *b) {
     mpz_sub(t, t4, z1z1);
     mpz_sub(t4, t, z2z2);
     mpz_mul(c->z, t4, h);
+
     mpz_mod(c->z, c->z, q);
+    mpz_mod(c->y, c->y, q);
+    mpz_mod(c->x, c->x, q);
 
     mpz_clears(z1z1, z2z2, u1, u2, t, s1, s2, h, i, j, r, v, t4, t6, NULL);
 }
@@ -221,11 +224,17 @@ void G1_double(G1 *p) {
     //mpz_mul(t,p->y,p->z);
     mpz_mod(t, t, q);
     mpz_add(p->z, t, t);
+
+    mpz_mod(p->x,p->x,q);
+    mpz_mod(p->y,p->y,q);
+    mpz_mod(p->z,p->z,q);
+
     mpz_clears(A, B, C, t, t2, d, e, f, NULL);
 }
 
 void G1_negate(G1 *p) {
     mpz_neg(p->y, p->y);
+    mpz_mod(p->y,p->y,q);
     mpz_set_ui(p->t, 0);
 }
 
@@ -338,11 +347,15 @@ void gfP2_init_field(gfP2 *p) {
 void gfP2_add(gfP2 *c, gfP2 *a, gfP2 *b) {
     mpz_add(c->x, a->x, b->x);
     mpz_add(c->y, a->y, b->y);
+    mpz_mod(c->x,c->x,q);
+    mpz_mod(c->y,c->y,q);
 }
 
 void gfP2_sub(gfP2 *c, gfP2 *a, gfP2 *b) {
     mpz_sub(c->x, a->x, b->x);
     mpz_sub(c->y, a->y, b->y);
+    mpz_mod(c->x,c->x,q);
+    mpz_mod(c->y,c->y,q);
 }
 
 void gfP2_mul(gfP2 *c, gfP2 *a, gfP2 *b) {
@@ -668,13 +681,6 @@ void oblivious_assign_str(uint8_t flag, char *res, char *t_val, char *f_val, int
     res[len] = '\0';
 }
 
-void oblivious_assign_G1(uint8_t flag, G1 *res, G1 *t_val, G1 *f_val) {
-    oblivious_assign_mpz(flag, res->x, t_val->x, f_val->x);
-    oblivious_assign_mpz(flag, res->y, t_val->y, f_val->y);
-    oblivious_assign_mpz(flag, res->z, t_val->z, f_val->z);
-    oblivious_assign_mpz(flag, res->t, t_val->t, f_val->t);
-}
-
 void oblivious_assign_mpz(uint8_t flag, mpz_t res, mpz_t t_val, mpz_t f_val) {
     char ts[69]; //1bit sign +  64bits data + 1bit terminal +  extra 3bits for padding
     char fs[69];
@@ -702,3 +708,36 @@ void oblivious_assign_mpz(uint8_t flag, mpz_t res, mpz_t t_val, mpz_t f_val) {
     oblivious_assign_str(flag, rs, ts, fs, max_l);
     mpz_set_str(res, rs, 16);
 }
+
+void oblivious_assign_G1(uint8_t flag, G1 *res, G1 *t_val, G1 *f_val) {
+    oblivious_assign_mpz2(flag, res->x, t_val->x, f_val->x);
+    oblivious_assign_mpz2(flag, res->y, t_val->y, f_val->y);
+    oblivious_assign_mpz2(flag, res->z, t_val->z, f_val->z);
+    oblivious_assign_mpz2(flag, res->t, t_val->t, f_val->t);
+}
+
+mp_limb_t oblivious_assign_mpz_limb(uint8_t flag, mp_limb_t t_val, mp_limb_t f_val) {
+    mp_limb_t res;
+    mp_limb_t upper = oblivious_assign_CMOV(flag,t_val>>32,f_val>>32);
+    res = (upper<<32) +
+            oblivious_assign_CMOV(flag,t_val&0x00000000ffffffff,f_val&0x00000000ffffffff);
+    return res;
+}
+
+void oblivious_assign_mpz2(uint8_t flag, mpz_t res, mpz_t t_val, mpz_t f_val) {
+    if(mpz_size(t_val) > 4 || mpz_size(f_val)>4) abort();
+    mp_limb_t *res_lim =  mpz_limbs_write(res,4);
+//    mp_limb_t *t_lim = mpz_limbs_read(t_val);
+//    mp_limb_t *f_lim = mpz_limbs_read(f_val);
+    for(int i=0;i<4;i++) {
+        mp_limb_t t = mpz_getlimbn(t_val,i);
+        mp_limb_t f = mpz_getlimbn(f_val,i);
+        res_lim[i]=oblivious_assign_mpz_limb(flag,t,f);
+    }
+    uint32_t t_sgn = mpz_sgn(t_val);
+    uint32_t f_sgn = mpz_sgn(f_val);
+    uint32_t res_sgn = oblivious_assign_CMOV(flag,t_sgn,f_sgn);
+    res[0]._mp_size = 4*res_sgn;
+}
+
+

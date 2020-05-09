@@ -121,4 +121,6 @@ void oblivious_assign_mpz(uint8_t flag, mpz_t res, mpz_t t_val, mpz_t f_val);
 
 void oblivious_assign_G1(uint8_t flag, G1 *res, G1 *t_val, G1 *f_val);
 
+void oblivious_assign_mpz2(uint8_t flag, mpz_t res, mpz_t t_val, mpz_t f_val);
+
 #endif //PROOF_BN256_H

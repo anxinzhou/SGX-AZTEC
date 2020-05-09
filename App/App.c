@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
 
 	int note_ratio = 2;
 	int max_k_power = 20;
-	int user_num = 100;
+	int user_num = 1000;
 	double ob_time,nonob_time;
 	obnote_generation_benchmark(global_eid,max_k_power,user_num,note_ratio,&ob_time);
 	nobnote_generation_benchmark(global_eid,max_k_power,user_num,&nonob_time);

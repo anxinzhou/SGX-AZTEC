@@ -178,9 +178,6 @@ void nobnote_generation_benchmark(int max_k_power, int user_num, double *cost) {
 		mpz_init_set_ui(user_a[i], myrand_int());
 	}
 
-	// benchmark start from here
-	uint64_t t1;
-	ocall_get_time(&t1);
 	//critical part, get mu  for each user
 	G1 *user_mus = (G1*) malloc(sizeof(G1) * user_num);
 	int *user_values = (int*) malloc(sizeof(int) * user_num);
@@ -197,6 +194,11 @@ void nobnote_generation_benchmark(int max_k_power, int user_num, double *cost) {
 		user_mus[i] = mu;
 		mpz_clear(tmp);
 	}
+
+	// benchmark start from here
+	uint64_t t1;
+	ocall_get_time(&t1);
+
 	// prepare proof
 	int note_num = user_num;
 	Cmt *user_cmt = (Cmt*) malloc(sizeof(Cmt) * note_num);
