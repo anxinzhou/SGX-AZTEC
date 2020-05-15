@@ -41,8 +41,7 @@ enclave {
     	public void obnote_generation_benchmark(int max_k_power,int user_num,int note_ratio,[in,out]double* cost);
     	public void nobnote_generation_benchmark(int max_k_power,int user_num,[in,out] double* cost);
     	public void test();
-    };
-
+	};
     untrusted {
     	
 		void ocall_print_string([in, string] const char *string);

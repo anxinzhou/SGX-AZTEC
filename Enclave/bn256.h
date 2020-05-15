@@ -19,7 +19,6 @@ typedef struct gfP2 gfP2;
 extern mpz_t q;
 extern G1 G1Gen;
 extern G2 G2Gen;
-extern const int y;
 
 void init_curve_parameter();
 void clear_curve_parameter();

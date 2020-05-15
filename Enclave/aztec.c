@@ -10,7 +10,7 @@
 G1 h;
 G1 **base_notes_mu;
 int **base_notes_value;
-const int y = 1 << 26;
+unsigned long int y = ((unsigned long int)1) << 63;
 const char *hex = "0123456789ABCDEF";
 
 void non_ob_init_aztec_parameters() {
@@ -55,6 +55,9 @@ void ob_init_aztec_parameters(int max_k_power, int note_ratio) {
 	base_notes_value = (int**) malloc(sizeof(int*) * note_ratio);
 	for (int i = 0; i < note_ratio; i++) {
 		int base_note_num = max_k_power / note_ratio;
+		if(base_note_num>max_k_power-note_ratio*i) {
+			base_note_num = max_k_power-note_ratio*i;
+		}
 
 		//BigInteger tmp(y-note_value);
 		//tmp = modinv(tmp,BN256::p.getMagnitude());

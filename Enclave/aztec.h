@@ -11,6 +11,7 @@
 extern G1 h;
 extern G1 ** base_notes_mu;
 extern int ** base_notes_value;
+extern unsigned long int y;
 
 void ob_init_aztec_parameters(int max_k_power,int note_ratio);
 void non_ob_init_aztec_parameters();

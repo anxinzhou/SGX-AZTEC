@@ -91,6 +91,9 @@ void obnote_generation_benchmark(int max_k_power, int user_num, int note_ratio,
 		int *division_value = (int*) malloc(sizeof(int) * note_ratio);
 		for (int j = 0; j < note_ratio; j++) {
 			int base_num = max_k_power / note_ratio;
+			if(base_num>max_k_power-note_ratio*i) {
+						base_num = max_k_power-note_ratio*i;
+					}
 			int total = 0;
 			for (int k = 0; k < base_num; k++) {
 				int pos = j * base_num + k;
@@ -103,6 +106,9 @@ void obnote_generation_benchmark(int max_k_power, int user_num, int note_ratio,
 		for (int j = 0; j < note_ratio; j++) {
 			int note_value = division_value[j];
 			int base_num = max_k_power / note_ratio;
+			if(base_num>max_k_power-note_ratio*i) {
+									base_num = max_k_power-note_ratio*i;
+								}
 			G1 mu;
 //            G1 test_mu;
 			G1_init_field(&mu);
@@ -182,7 +188,7 @@ void nobnote_generation_benchmark(int max_k_power, int user_num, double *cost) {
 	G1 *user_mus = (G1*) malloc(sizeof(G1) * user_num);
 	int *user_values = (int*) malloc(sizeof(int) * user_num);
 	for (int i = 0; i < user_num; i++) {
-		user_values[i] = myrand_int() % (1 << max_k_power);
+		user_values[i] = myrand_int() % ((unsigned long int) 1 << max_k_power);
 		k_public += user_values[i];
 
 		mpz_t tmp;

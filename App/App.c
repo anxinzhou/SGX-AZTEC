@@ -130,15 +130,63 @@ int main(int argc, char *argv[]) {
 		print_error_message(ret);
 		return -1;
 	}
+/*
+	// test k power impact
+	int k_sample = 9;
+	int user_num = 4000;
+	int note_ratio= 2;
+	int counts_of_k[9] = {16,18,20,22,24,26,28,30,32};
 
-	int note_ratio = 2;
-	int max_k_power = 20;
-	int user_num = 1000;
-	double ob_time,nonob_time;
-	obnote_generation_benchmark(global_eid,max_k_power,user_num,note_ratio,&ob_time);
-	nobnote_generation_benchmark(global_eid,max_k_power,user_num,&nonob_time);
-	printf("ob time %f\n",ob_time);
-	printf("non ob time %f\n",nonob_time);
+
+	printf("%d\n",sizeof(unsigned long int));
+	for(int i=0;i<k_sample;i++) {
+
+		double ob_time,nonob_time;
+		obnote_generation_benchmark(global_eid,counts_of_k[i],user_num,note_ratio,&ob_time);
+		nobnote_generation_benchmark(global_eid,counts_of_k[i],user_num,&nonob_time);
+		printf("ratio:%d kpower:%d user:%d ob time %f\n",note_ratio,counts_of_k[i],user_num,ob_time);
+		printf("ratio:%d kpower:%d user:%d non ob time %f\n",note_ratio,counts_of_k[i],user_num,nonob_time);
+	}
+*/
+
+	// test note ratio impact
+int note_sample = 5;
+	int max_k_power = 32;
+	int user_num = 4000;
+	int counts_of_ratio[11] = {2,3,4,5,6,7,8,10,12,14,16};
+
+
+	printf("%d\n",sizeof(unsigned long int));
+	for(int i=0;i<note_sample;i++) {
+
+		double ob_time,nonob_time;
+		obnote_generation_benchmark(global_eid,max_k_power,user_num,counts_of_ratio[i],&ob_time);
+		nobnote_generation_benchmark(global_eid,max_k_power,user_num,&nonob_time);
+		printf("ratio:%d kpower:%d user:%d ob time %f\n",counts_of_ratio[i],max_k_power,user_num,ob_time);
+		printf("ratio:%d kpower:%d user:%d non ob time %f\n",counts_of_ratio[i],max_k_power,user_num,nonob_time);
+	}
+
+
+
+	// test user num
+	/*int user_sample = 10;
+	int counts_of_user[user_sample];
+	for (int i=0;i<user_sample;i++) {
+		counts_of_user[i] = (i+1)*1000;
+	}
+
+	printf("%d\n",sizeof(unsigned long int));
+	for(int i=0;i<user_sample;i++) {
+		int note_ratio = 2;
+		int max_k_power = 28;
+		//int user_num = 1000;
+		double ob_time,nonob_time;
+		obnote_generation_benchmark(global_eid,max_k_power,counts_of_user[i],note_ratio,&ob_time);
+		nobnote_generation_benchmark(global_eid,max_k_power,counts_of_user[i],&nonob_time);
+		printf("ratio:%d kpower:%d user:%d ob time %f\n",note_ratio,max_k_power,counts_of_user[i],ob_time);
+		printf("ratio:%d kpower:%d user:%d non ob time %f\n",note_ratio,max_k_power,counts_of_user[i],nonob_time);
+	}*/
+
 	//    mpz_t t;
 	//    mpz_init_set_str(t,"ffff",16);
 	//    mpz_t t2;
