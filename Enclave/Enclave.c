@@ -49,12 +49,11 @@ void obnote_generation_benchmark(int max_k_power, int user_num, int note_ratio,
 		double *cost) {
 	if (max_k_power % note_ratio != 0) {
 
-		abort();
+		//abort();
 	}
 
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(THREAD_NUM); // Use 4 threads for all consecutive parallel regions
-
 
 	init_curve_parameter();
 	ob_init_aztec_parameters(max_k_power, note_ratio);
@@ -91,9 +90,9 @@ void obnote_generation_benchmark(int max_k_power, int user_num, int note_ratio,
 		int *division_value = (int*) malloc(sizeof(int) * note_ratio);
 		for (int j = 0; j < note_ratio; j++) {
 			int base_num = max_k_power / note_ratio;
-			if(base_num>max_k_power-note_ratio*i) {
-						base_num = max_k_power-note_ratio*i;
-					}
+			if (base_num > max_k_power - base_num * j) {
+				base_num = max_k_power - base_num * j;
+			}
 			int total = 0;
 			for (int k = 0; k < base_num; k++) {
 				int pos = j * base_num + k;
@@ -106,9 +105,9 @@ void obnote_generation_benchmark(int max_k_power, int user_num, int note_ratio,
 		for (int j = 0; j < note_ratio; j++) {
 			int note_value = division_value[j];
 			int base_num = max_k_power / note_ratio;
-			if(base_num>max_k_power-note_ratio*i) {
-									base_num = max_k_power-note_ratio*i;
-								}
+			if (base_num > max_k_power - base_num * j) {
+				base_num = max_k_power - base_num * j;
+			}
 			G1 mu;
 //            G1 test_mu;
 			G1_init_field(&mu);

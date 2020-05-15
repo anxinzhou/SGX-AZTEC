@@ -150,11 +150,11 @@ int main(int argc, char *argv[]) {
 */
 
 	// test note ratio impact
-int note_sample = 5;
+int note_sample = 11;
 	int max_k_power = 32;
 	int user_num = 4000;
 	int counts_of_ratio[11] = {2,3,4,5,6,7,8,10,12,14,16};
-
+	//int counts_of_ratio[11] = {6,7,8,10,12,14,16};
 
 	printf("%d\n",sizeof(unsigned long int));
 	for(int i=0;i<note_sample;i++) {

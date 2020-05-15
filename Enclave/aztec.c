@@ -10,7 +10,7 @@
 G1 h;
 G1 **base_notes_mu;
 int **base_notes_value;
-unsigned long int y = ((unsigned long int)1) << 63;
+unsigned long int y = ((unsigned long int) 1) << 63;
 const char *hex = "0123456789ABCDEF";
 
 void non_ob_init_aztec_parameters() {
@@ -29,6 +29,9 @@ void ob_clear_aztec_parameters(int max_k_power, int note_ratio) {
 	G1_clear_field(&h);
 	for (int i = 0; i < note_ratio; i++) {
 		int base_note_num = max_k_power / note_ratio;
+		if (base_note_num > max_k_power - base_note_num * i) {
+			base_note_num = max_k_power - base_note_num * i;
+		}
 		for (int j = 0; j < (1 << base_note_num); j++) {
 			G1_clear_field(&base_notes_mu[i][j]);
 		}
@@ -39,8 +42,8 @@ void ob_clear_aztec_parameters(int max_k_power, int note_ratio) {
 }
 
 void ob_init_aztec_parameters(int max_k_power, int note_ratio) {
-	if (max_k_power % note_ratio != 0)
-		abort();
+	//if (max_k_power % note_ratio != 0)
+	//abort();
 	if (1 << max_k_power >= y)
 		abort();
 	// init h
@@ -53,10 +56,11 @@ void ob_init_aztec_parameters(int max_k_power, int note_ratio) {
 	// init mu and base note value
 	base_notes_mu = (G1**) malloc(sizeof(G1*) * note_ratio);
 	base_notes_value = (int**) malloc(sizeof(int*) * note_ratio);
+
 	for (int i = 0; i < note_ratio; i++) {
 		int base_note_num = max_k_power / note_ratio;
-		if(base_note_num>max_k_power-note_ratio*i) {
-			base_note_num = max_k_power-note_ratio*i;
+		if (base_note_num > max_k_power - base_note_num * i) {
+			base_note_num = max_k_power - base_note_num * i;
 		}
 
 		//BigInteger tmp(y-note_value);
@@ -212,17 +216,12 @@ void proof_clear_field(Proof *proof) {
 	free(proof->k);
 }
 
-
-
 void sha256(unsigned char **digest, unsigned char *message, size_t message_len) {
 	unsigned int SHALEN = 32;
 	sgx_sha_state_handle_t p_sha_handle;
 
-
-	sgx_status_t ret = sgx_sha256_msg(
-			message, message_len, digest
-			);
-	if(ret!=SGX_SUCCESS) {
+	sgx_status_t ret = sgx_sha256_msg(message, message_len, digest);
+	if (ret != SGX_SUCCESS) {
 		abort();
 	}
 
